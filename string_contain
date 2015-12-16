@@ -1,0 +1,3 @@
+public boolean string_contain(String str, String substr){
+	return str.Contains(substr);
+}
