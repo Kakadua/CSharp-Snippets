@@ -3,6 +3,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Threading;
 
 class KakaduaUtil{
 
@@ -34,6 +36,33 @@ class KakaduaUtil{
             return client.DownloadString(url);
         }
         catch (Exception e) { return "error"; }
+    }
+
+
+
+
+    /// <summary>
+    /// Check if a string contains a substring, same as String.Contains()
+    /// </summary>
+    /// <returns>true or false</returns>
+    /// <param name="str">The string you want to check</param>
+    /// <param name="substr">The string you want to check for</param>
+    /// <example>
+    /// The following example demonstrates the use of this method.
+    /// 
+    /// <code language="cs">
+    /// String my_string = "Kakadua means Cockatoo in Swedish";
+    /// 
+    /// if(string_contain(my_string, "Cockatoo")){
+    ///     //This code will run
+    /// } else{
+    ///     //This code will not run
+    /// }
+    /// </code>
+    /// </example>
+    public static Boolean string_contain(String str, String substr)
+    {
+        return str.Contains(substr);
     }
 
 
@@ -182,7 +211,7 @@ class KakaduaUtil{
     /// </example>
     public static String get_between(String content, String before, String after)
     {
-        String[] temp = explode(before, content);
+        String[] temp = KakaduaUtil.explode(before, content);
         if (!String.IsNullOrEmpty(temp[1]))
         {
             temp = explode(after, temp[1]);
@@ -192,6 +221,50 @@ class KakaduaUtil{
         {
             return "";
         }
+    }
+
+
+
+
+    /// <summary>
+    /// Force the GUI to update
+    /// </summary>
+    public static void update_frame()
+    {
+        DispatcherFrame frame = new DispatcherFrame(true);
+        Dispatcher.CurrentDispatcher.BeginInvoke
+        (
+            DispatcherPriority.Background,
+            (SendOrPostCallback)delegate (object arg) {
+                var f = arg as DispatcherFrame;
+                f.Continue = false;
+            },
+            frame
+        );
+        Dispatcher.PushFrame(frame);
+    }
+
+
+
+
+    /// <summary>
+    /// Simulate PHPs urldecode
+    /// </summary>
+    /// <returns>Decode a URL</returns>
+    /// <param name="url">The string you want decoded</param>
+    /// <example>
+    /// The following example demonstrates the use of this method.
+    /// 
+    /// <code language="cs">
+    /// String text = "Kakadua%20means%20Cockatoo%20in%20swedish";
+    /// 
+    /// String clearText = KakaduaUtil.urldecode(text);
+    /// 
+    /// //clearText == Kakadua means Cockatoo in swedish
+    /// </code>
+    /// </example>
+    public static String urldecode(String url){
+        return Uri.UnescapeDataString(url);
     }
 
 
